@@ -28,6 +28,12 @@ jobs:
         run: |
           docker build -t my-docker-image .
         working-directory: ./application
+    
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.0 # Specify the Terraform version you want to use
+          terraform_wrapper: false
 
       - name: Provision resources using Terraform
         run: |
