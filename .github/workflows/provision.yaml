@@ -44,12 +44,7 @@ jobs:
           audience: sts.amazonaws.com
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
-
-      - name: Build docker image
-        run: |
-          docker build -t my-docker-image .
-        working-directory: ./application
-    
+              
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:

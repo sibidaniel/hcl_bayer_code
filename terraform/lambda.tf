@@ -10,7 +10,6 @@ resource "aws_lambda_function" "my_lambda_function" {
   tracing_config {
     mode = "Active"
   }
-  handler       = "index.handler"
   image_uri     = "539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest"
   timeout       = 30
   memory_size   = 256
