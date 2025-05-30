@@ -11,7 +11,6 @@ resource "aws_lambda_function" "my_lambda_function" {
     mode = "Active"
   }
   handler       = "index.handler"
-  runtime       = "container-image"
   image_uri     = "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest"
   timeout       = 30
   memory_size   = 256
