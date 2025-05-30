@@ -28,15 +28,17 @@ jobs:
         run: |
           docker build -t my-docker-image .
         working-directory: ./application
-      - name: Push docker image to ECR
-        run: |
-          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-west-2.amazonaws.com
-          docker tag my-docker-image:latest 539935451710.dkr.ecr.us-west-2.amazonaws.com/my-docker-image:latest
-          docker push 539935451710.dkr.ecr.us-west-2.amazonaws.com/my-docker-image:latest
-        working-directory: ./application
 
       - name: Provision resources using Terraform
         run: |
           cd terraform
           terraform init
           terraform plan
+      - name: Push docker image to ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-east-1.amazonaws.com
+          docker tag my-docker-image:latest 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-docker-image:latest
+          docker push 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-docker-image:latest
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: 539935451710 # Replace with your AWS account ID
