@@ -39,7 +39,8 @@ jobs:
         run: |
           cd terraform
           terraform init
-          terraform plan
+          terraform plan -out=myplan.tfplan
+          terraform show myplan.tfplan
       - name: Push docker image to ECR
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-east-1.amazonaws.com
