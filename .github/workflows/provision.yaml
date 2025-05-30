@@ -1,0 +1,29 @@
+name: Provision AWS Resources
+on: [push]
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-west-2
+          role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
+
+      - name: Build docker image
+        run: |
+          docker build -t my-docker-image .
+      - name: Push docker image to ECR
+        run: |
+          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-west-2.amazonaws.com
+          docker tag my-docker-image:latest 539935451710.dkr.ecr.us-west-2.amazonaws.com/my-docker-image:latest
+          docker push 539935451710.dkr.ecr.us-west-2.amazonaws.com/my-docker-image:latest
+
+      - name: Provision resources using Terraform
+        run: |
+          cd terraform
+          terraform init
+          terraform plan
