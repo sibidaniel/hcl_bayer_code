@@ -73,14 +73,14 @@ const express = require('express');
         res.status(500).json({ error: 'Internal server error' });
       }
     });
-    if (process.env.FUNCTION_NAME) {
-  // Running in Lambda
-  const serverlessExpress = require('@vendia/serverless-express');
-  exports.handler = serverlessExpress({ app });
-    } else {
+    if (process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      // Running in Lambda
+    const serverlessExpress = require('@vendia/serverless-express');
+    exports.handler = serverlessExpress({ app });
+    }else {
   // Local run
-  const port = process.env.PORT || 3001;
+    const port = process.env.PORT || 3001;
     app.listen(port, '0.0.0.0', () => {
     console.log(`Appointment service listening at http://0.0.0.0:${port}`);
-  });
+    });
 }
