@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "my_docker_image" {
-  name = "my-docker-image"
+  name = "my-lambda-image"
 
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
