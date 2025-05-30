@@ -1,16 +1,25 @@
 resource "aws_lambda_function" "my_lambda_function" {
   function_name = "my_lambda_function"
-  role          = aws_iam_role.devops_role.arn
+  role          = aws_iam_role.lambda_execution_role.arn
+  description   = "My Lambda function using a container image"
+  package_type  = "Image"
+  vpc_config {
+    security_group_ids = [aws_security_group.lambda_sg.id]
+    subnet_ids         = aws_subnet.lambda_subnets[*].id
+  }
+  tracing_config {
+    mode = "Active"
+  }
+  layers = [aws_lambda_layer_version.my_layer.arn]
   handler       = "index.handler"
   runtime       = "container-image"
-  image_uri     = "123456789012.dkr.ecr.us-west-2.amazonaws.com/my-lambda-image:latest"
+  image_uri     = "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest"
   timeout       = 30
   memory_size   = 256
 
   environment {
     variables = {
-      ENV_VAR1 = "value1"
-      ENV_VAR2 = "value2"
+      AWS_LAMBDA_FUNCTION_NAME = "my_lambda_function"
     }
   }
 

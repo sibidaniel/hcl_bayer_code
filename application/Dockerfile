@@ -1,12 +1,7 @@
-FROM node:18
-# Create app directory
-WORKDIR /usr/src/app
-# Install app dependencies
-COPY package.json ./
-RUN npm install
-# Bundle app source
+FROM public.ecr.aws/lambda/nodejs:18
+
 COPY . .
 # Expose the port the app runs on
-EXPOSE 3001
+RUN npm install
 # Define the command to run the app
-CMD [ "node", "index.js" ]
+CMD [ "index.handler" ]
