@@ -11,6 +11,28 @@ permissions:
     id-token: write
     contents: read
 jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          audience: sts.amazonaws.com
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
+      - name: Build docker image
+        run: |
+          docker build -t my-docker-image .
+        working-directory: ./application
+      - name: Push docker image to ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-east-1.amazonaws.com
+          docker tag my-docker-image:latest 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
+          docker push 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
+  # This job provisions AWS resources using Terraform
   provision:
     runs-on: ubuntu-latest
     steps:
@@ -42,11 +64,6 @@ jobs:
           terraform plan -out=myplan.tfplan
           terraform show myplan.tfplan
           terraform apply -auto-approve myplan.tfplan
-      - name: Push docker image to ECR
-        run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-east-1.amazonaws.com
-          docker tag my-docker-image:latest 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
-          docker push 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
         env:
           AWS_REGION: us-east-1
           AWS_ACCOUNT_ID: 539935451710 # Replace with your AWS account ID
