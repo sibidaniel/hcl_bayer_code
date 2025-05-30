@@ -73,7 +73,7 @@ const express = require('express');
         res.status(500).json({ error: 'Internal server error' });
       }
     });
-    if (process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    if (process.env.FUNCTION_NAME) {
   // Running in Lambda
   const serverlessExpress = require('@vendia/serverless-express');
   exports.handler = serverlessExpress({ app });

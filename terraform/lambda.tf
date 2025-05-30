@@ -17,7 +17,7 @@ resource "aws_lambda_function" "my_lambda_function" {
 
   environment {
     variables = {
-      AWS_LAMBDA_FUNCTION_NAME = "my_lambda_function"
+      FUNCTION_NAME = "my_lambda_function"
     }
   }
 
