@@ -4,13 +4,12 @@ resource "aws_lambda_function" "my_lambda_function" {
   description   = "My Lambda function using a container image"
   package_type  = "Image"
   vpc_config {
-    security_group_ids = [aws_security_group.lambda_sg.id]
-    subnet_ids         = aws_subnet.lambda_subnets[*].id
+    security_group_ids = [aws_security_group.public_sg.id]
+    subnet_ids         = aws_subnet.public[*].id
   }
   tracing_config {
     mode = "Active"
   }
-  layers = [aws_lambda_layer_version.my_layer.arn]
   handler       = "index.handler"
   runtime       = "container-image"
   image_uri     = "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest"
