@@ -60,3 +60,7 @@ resource "aws_iam_role_policy_attachment" "lambda_apigateway_access" {
   role       = aws_iam_role.lambda_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
 }
+resource "aws_iam_role_policy_attachment" "create_network_network_interface" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"  
+}
