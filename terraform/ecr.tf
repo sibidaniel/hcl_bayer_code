@@ -50,21 +50,3 @@ resource "aws_ecr_repository_policy" "my_docker_image_policy" {
     ]
   })
 }
-resource "aws_ecr_repository_encryption_configuration" "my_docker_image_encryption" {
-  repository = aws_ecr_repository.my_docker_image.name
-
-  encryption_type = "AES256"
-}
-resource "aws_ecr_repository_public" "my_docker_image_public" {
-  repository_name = "my-docker-image-public"
-
-  image_tag_mutability = "MUTABLE"
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-
-  tags = {
-    Name        = "My Public Docker Image Repository"
-    Environment = "Dev"
-  }
-}
