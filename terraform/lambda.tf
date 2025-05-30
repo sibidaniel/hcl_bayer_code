@@ -19,6 +19,10 @@ resource "aws_lambda_function" "my_lambda_function" {
       FUNCTION_NAME = "my_lambda_function"
     }
   }
+  image_config {
+    command = ["index.handler"]
+    
+  }
 
   tags = {
     Name        = "My Lambda Function"
