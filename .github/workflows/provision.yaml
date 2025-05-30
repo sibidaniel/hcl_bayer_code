@@ -32,7 +32,6 @@ jobs:
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-east-1.amazonaws.com
           docker tag my-docker-image:latest 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
           docker push 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
-  # This job provisions AWS resources using Terraform
   provision:
     runs-on: ubuntu-latest
     steps:
