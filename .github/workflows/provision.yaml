@@ -25,13 +25,13 @@ jobs:
           role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
       - name: Build docker image
         run: |
-          docker build -t my-docker-image .
+          docker build -t my-docker-image:v1.0 .
         working-directory: ./application
       - name: Push docker image to ECR
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-east-1.amazonaws.com
-          docker tag my-docker-image:latest 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
-          docker push 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
+          docker tag my-docker-image:v1.0 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:v1.0
+          docker push 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:v1.0
   provision:
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +44,7 @@ jobs:
           audience: sts.amazonaws.com
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
-              
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
