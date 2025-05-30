@@ -1,5 +1,12 @@
 name: Provision AWS Resources
-on: [push]
+on: 
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/provision.yaml'
+      - 'Dockerfile'
 jobs:
   provision:
     runs-on: ubuntu-latest
@@ -10,7 +17,8 @@ jobs:
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: us-west-2
+          audience: sts.amazonaws.com
+          aws-region: us-east-1
           role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
 
       - name: Build docker image
