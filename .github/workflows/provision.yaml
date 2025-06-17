@@ -1,0 +1,63 @@
+name: Provision AWS Resources
+on: 
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/provision.yaml'
+      - 'Dockerfile'
+permissions:
+    id-token: write
+    contents: read
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          audience: sts.amazonaws.com
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
+      - name: Build docker image
+        run: |
+          docker build -t my-docker-image:v1.0 .
+        working-directory: ./application
+      - name: Push docker image to ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-east-1.amazonaws.com
+          docker tag my-docker-image:v1.0 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:v1.0
+          docker push 539935451710.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:v1.0
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          audience: sts.amazonaws.com
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::539935451710:role/GitHubAction-AssumeRoleWithAction # Replace with your role ARN
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.0 # Specify the Terraform version you want to use
+          terraform_wrapper: false
+
+      - name: Provision resources using Terraform
+        run: |
+          cd terraform
+          terraform init
+          terraform plan -out=myplan.tfplan
+          terraform show myplan.tfplan
+          terraform apply -auto-approve myplan.tfplan
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: 539935451710 # Replace with your AWS account ID
